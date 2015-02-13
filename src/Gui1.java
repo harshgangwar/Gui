@@ -17,6 +17,7 @@ public class Gui1 {
 					Gui1 window = new Gui1();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
+				//yooyoyoy
 					e.printStackTrace();
 				}
 			}
