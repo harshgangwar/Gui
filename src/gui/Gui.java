@@ -1,22 +1,29 @@
-package gui;
+ package gui;
 
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Color;
 import java.sql.*;
 
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
+import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Gui 
 {
 
-	Connection c=null;
+// 	Connection c=null;
 	ResultSet r=null;
 	PreparedStatement p=null;
+	
 	
 	private JFrame frame;
 	private JTextField textField;
@@ -33,6 +40,7 @@ public class Gui
 			{
 				try
 				{
+					
 					Gui window = new Gui();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -45,8 +53,10 @@ public class Gui
 	/**
 	 * Create the application.
 	 */
+	Connection c=null;
 	public Gui() {
 		initialize();
+		c=Sqlite.dbconn();
 	}
 
 	/**
@@ -60,6 +70,42 @@ public class Gui
 		frame.getContentPane().setLayout(null);
 		
 		JButton btnNewButton = new JButton("log in");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try
+				{
+					String query="select * from list where username =? and password=?";
+					PreparedStatement p=c.prepareStatement(query);
+					p.setString(1,textField.getText());
+					p.setString(2,passwordField.getText());
+					ResultSet r=p.executeQuery();
+					int count=0;
+					while(r.next())
+					{
+						count+=1;
+						
+					}
+					if(count==1)
+					{
+						JOptionPane.showMessageDialog(null,"Username and Password is correct");
+					}
+					else if(count>1)
+					{
+						JOptionPane.showMessageDialog(null,"Dulpicate Username and Password");
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null,"Username and Password is uncorrect..Try Again");
+					}
+					r.close();// to close the db connection
+					p.close();// to close the db connection
+				}
+				catch(Exception e)
+				{
+					JOptionPane.showMessageDialog(null,e);
+				}
+			}
+		});
 		btnNewButton.setBounds(129, 168, 135, 23);
 		frame.getContentPane().add(btnNewButton);
 		
@@ -79,5 +125,14 @@ public class Gui
 		passwordField = new JPasswordField();
 		passwordField.setBounds(140, 81, 86, 20);
 		frame.getContentPane().add(passwordField);
+		
+		
+		//start ur code
+		
+		
+		
+		
+		
+		
 	}
 }
